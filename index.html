@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Page</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap">
+    <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/material-components-web@13.0.0/dist/material-components-web.min.css">
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <!--Importações-->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js">
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/material-components-web@13.0.0/dist/material-components-web.min.js">
+    </script>
+    <style>
+        .body {
+            margin: 0;
+            font-family: "Roboto", sans-serif;
+            background-color: #DCE4E3;
+        }
+
+        .sidebar {
+            height: 100%;
+            width: 250px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            background-color: #6590D5;
+            padding-top: 20px;
+            color: white;
+        }
+
+        .sidebar a {
+            padding: 16px;
+            text-decoration: none;
+            font-size: 20px;
+            color: white;
+            display: block;
+        }
+
+        .content {
+            margin-left: 250px;
+            padding: 20px;
+        }
+
+        .avatar-image {
+            border-radius: 50%;
+            /* Make the image circular */
+            width: 100px;
+            /* Adjust the width and height as needed */
+            height: 100px;
+            object-fit: cover;
+            /* Ensure the image covers the circular area */
+        }
+
+        canvas {
+            max-width: 100%;
+        }
+
+        .fab {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+        }
+
+        .mdc-text-field__input {
+            margin-top: 15px;
+            /* padding: 20px; */
+            /* Adjust the padding value as needed */
+        }
+    </style>
+</head>
+
+
+<body>
+    <!--Login-->
+    <section id="login">
+        <div class="mdc-card" style="max-width: 400px; margin: 0 auto; margin-top: 100px; padding: 20px;">
+            <h2 class="mdc-typography--headline6" style="margin-bottom: 20px;">Login</h2>
+            <div class="mdc-text-field mdc-text-field--outlined" style="width: 100%;">
+                <input type="email" id="email-input" class="mdc-text-field__input">
+                <label for="email-input" class="mdc-floating-label">Email</label>
+                <div class="mdc-line-ripple"></div>
+            </div>
+            <div class="mdc-text-field mdc-text-field--outlined" style="width: 100%; margin-top: 20px;">
+                <input type="password" id="password-input" class="mdc-text-field__input">
+                <label for="password-input" class="mdc-floating-label">Password</label>
+                <div class="mdc-line-ripple"></div>
+            </div>
+            <button class="mdc-button mdc-button--raised mdc-button--dense mdc-button--primary"
+                style="width: 100%; margin-top: 20px;" href="#dashboard" onclick="showDashboard()">
+                <span class="mdc-button__label">Login</span>
+            </button>
+        </div>
+
+        <!-- Material Design JS -->
+        <script src="https://cdn.jsdelivr.net/npm/material-components-web@13.0.0/dist/material-components-web.min.js">
+        </script>
+    </section>
+
+    <section id="container">
+        <!--Sidebar-->
+        <section id="sidebar" style="display: none;">
+            <div class="sidebar">
+                <div class="mdc-drawer__header">
+                    <img src="https://i.pravatar.cc/150?img=5" alt="Avatar" class="avatar-image">
+                    <div class="mdc-drawer__header-content">
+                    </div>
+                </div>
+                <div class="mdc-drawer__content">
+                    <nav class="mdc-list">
+                        <a href="#dashboard" onclick="showDashboard()">
+                            <span class="mdc-list-item__text">Dashboard</span></a>
+                    </nav>
+                    <nav class="mdc-list">
+                        <a class="mdc-list-item" href="#medidas" onclick="showMedidas()">
+                            <span class="mdc-list-item__text">Adicionar medidas</span>
+                        </a>
+                    </nav>
+                    <nav class="mdc-list">
+                        <a class="mdc-list-item" href="#tmb" onclick="showTMB()">
+                            <span class="mdc-list-item__text">Cálculo TMB</span>
+                        </a>
+                    </nav>
+                    <nav class="mdc-list">
+                        <a class="mdc-list-item" href="#perfil" onclick="showPerfil()">
+                            <span class="mdc-list-item__text">Perfil</span>
+                        </a>
+                    </nav>
+                    <nav class="mdc-list">
+                        <a class="mdc-list-item" href="#perfil" onclick="sair()">
+                            <span class="mdc-list-item__text">Sair</span>
+                        </a>
+                    </nav>
+                </div>
+            </div>
+        </section>
+
+        <!--Dashboard-->
+        <section id="dashboard" style="display: none;">
+            <div class="content">
+                <h2>Perda de peso</h2>
+                <canvas id="weightChart"></canvas>
+            </div>
+
+            <script>
+                // Sample data for the line chart
+                const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+                const weights = [150, 148, 145, 142, 140, 138, 135, 132, 130, 128, 125, 123];
+
+                // Create the line chart
+                const ctx = document.getElementById('weightChart').getContext('2d');
+                new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: months,
+                        datasets: [{
+                            label: 'Weight',
+                            data: weights,
+                            borderColor: 'blue',
+                            backgroundColor: 'rgba(0, 0, 255, 0.2)',
+                            borderWidth: 1,
+                            pointRadius: 4,
+                            pointBackgroundColor: 'blue'
+                        }]
+                    },
+                    options: {
+                        scales: {
+                            x: {
+                                grid: {
+                                    display: false
+                                }
+                            },
+                            y: {
+                                beginAtZero: true,
+                                title: {
+                                    display: true,
+                                    text: 'Weight (lbs)'
+                                }
+                            }
+                        }
+                    }
+                });
+            </script>
+        </section>
+
+        <!--Medidas-->
+        <section id="medidas" style="display: none;">
+            <div class="content">
+                <h1>Cadastro de Medidas</h1>
+                <table class="mdc-data-table" style="width: 100%;">
+                    <thead>
+                        <tr class="mdc-data-table__header-row">
+                            <th class="mdc-data-table__header-cell">Data</th>
+                            <th class="mdc-data-table__header-cell">Pescoço</th>
+                            <th class="mdc-data-table__header-cell">Braço</th>
+                            <th class="mdc-data-table__header-cell">Peito</th>
+                            <th class="mdc-data-table__header-cell">Cintura</th>
+                            <th class="mdc-data-table__header-cell">Quadril</th>
+                            <th class="mdc-data-table__header-cell">Coxa</th>
+                            <th class="mdc-data-table__header-cell">Panturrilha</th>
+                        </tr>
+                    </thead>
+                    <tbody id="measurementsBody">
+                        <!-- Data will be populated here -->
+                    </tbody>
+                </table>
+            </div>
+
+            <button class="mdc-fab fab" id="addMeasurement">
+                <span class="mdc-fab__icon material-icons">add</span>
+            </button>
+
+            <!-- Modal for adding measurements -->
+            <div class="mdc-dialog" id="measurementModal">
+                <div class="mdc-dialog__container">
+                    <div class="mdc-dialog__surface">
+                        <h2 class="mdc-dialog__title">Adicionar Medidas</h2>
+                        <div class="mdc-dialog__content">
+                            <div class="mdc-text-field mdc-text-field--outlined" style="width: 100%;">
+                                <input type="date" id="measurementDate" class="mdc-text-field__input">
+                                <label for="measurementDate" class="mdc-floating-label">Data</label>
+                                <div class="mdc-line-ripple"></div>
+                            </div>
+                            <div class="mdc-text-field mdc-text-field--outlined" style="width: 100%;">
+                                <input type="number" id="neck" class="mdc-text-field__input">
+                                <label for="neck" class="mdc-floating-label">Pescoço</label>
+                                <div class="mdc-line-ripple"></div>
+                            </div>
+                            <div class="mdc-text-field mdc-text-field--outlined" style="width: 100%;">
+                                <input type="number" id="arm" class="mdc-text-field__input">
+                                <label for="arm" class="mdc-floating-label">Braço</label>
+                                <div class="mdc-line-ripple"></div>
+                            </div>
+                            <div class="mdc-text-field mdc-text-field--outlined" style="width: 100%;">
+                                <input type="number" id="chest" class="mdc-text-field__input">
+                                <label for="chest" class="mdc-floating-label">Peito</label>
+                                <div class="mdc-line-ripple"></div>
+                            </div>
+                            <div class="mdc-text-field mdc-text-field--outlined" style="width: 100%;">
+                                <input type="number" id="waist" class="mdc-text-field__input">
+                                <label for="waist" class="mdc-floating-label">Cintura</label>
+                                <div class="mdc-line-ripple"></div>
+                            </div>
+                            <div class="mdc-text-field mdc-text-field--outlined" style="width: 100%;">
+                                <input type="number" id="hip" class="mdc-text-field__input">
+                                <label for="hip" class="mdc-floating-label">Quadril</label>
+                                <div class="mdc-line-ripple"></div>
+                            </div>
+                            <div class="mdc-text-field mdc-text-field--outlined" style="width: 100%;">
+                                <input type="number" id="thigh" class="mdc-text-field__input">
+                                <label for="thigh" class="mdc-floating-label">Coxa</label>
+                                <div class="mdc-line-ripple"></div>
+                            </div>
+                            <div class="mdc-text-field mdc-text-field--outlined" style="width: 100%;">
+                                <input type="number" id="calf" class="mdc-text-field__input">
+                                <label for="calf" class="mdc-floating-label">Panturrilha</label>
+                                <div class="mdc-line-ripple"></div>
+                            </div>
+
+                        </div>
+                        <div class="mdc-dialog__actions">
+                            <button type="button" class="mdc-button mdc-dialog__button mdc-dialog__button--cancel"
+                                data-mdc-dialog-action="close">Cancelar</button>
+                            <button type="button" class="mdc-button mdc-dialog__button"
+                                id="saveMeasurement">Salvar</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="mdc-dialog__scrim"></div>
+            </div>
+
+            <script>
+                // Add event listeners to all input fields
+                const inputFields = document.querySelectorAll('.mdc-text-field__input');
+
+                inputFields.forEach(input => {
+                    const label = input.nextElementSibling; // Assuming the label follows the input
+
+                    input.addEventListener('input', () => {
+                        toggleLabelVisibility(input, label);
+                    });
+                });
+
+                // Function to toggle label visibility
+                function toggleLabelVisibility(inputElement, labelElement) {
+                    if (inputElement.value) {
+                        labelElement.classList.add('mdc-floating-label--float-above');
+                    } else {
+                        labelElement.classList.remove('mdc-floating-label--float-above');
+                    }
+                }
+                const addButton = document.getElementById('addMeasurement');
+                const saveButton = document.getElementById('saveMeasurement');
+                const modal = new mdc.dialog.MDCDialog(document.querySelector('#measurementModal'));
+                const measurementsBody = document.getElementById('measurementsBody');
+
+                addButton.addEventListener('click', () => {
+                    modal.open();
+                });
+
+                saveButton.addEventListener('click', () => {
+                    // Get measurements from input fields
+                    const date = document.getElementById('measurementDate').value;
+                    const neck = document.getElementById('neck').value;
+                    const arm = document.getElementById('arm').value;
+                    const chest = document.getElementById('chest').value;
+                    const waist = document.getElementById('waist').value;
+                    const hip = document.getElementById('hip').value;
+                    const thigh = document.getElementById('thigh').value;
+                    const calf = document.getElementById('calf').value;
+                    // Similar variables for other measurements
+
+                    // Check if date is empty
+                    if (!date) {
+                        alert('Please enter a date for the measurement.');
+                        return;
+                    }
+
+                    // Save measurements to local storage
+                    const measurements = JSON.parse(localStorage.getItem('measurements')) || [];
+                    measurements.push({ date, neck, arm, chest, waist, hip, thigh, calf });
+                    localStorage.setItem('measurements', JSON.stringify(measurements));
+
+                    // Clear and repopulate table
+                    measurementsBody.innerHTML = '';
+                    measurements.forEach(measurement => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+            <td class="mdc-data-table__cell">${measurement.date || ''}</td>
+            <td class="mdc-data-table__cell">${measurement.neck || ''}</td>
+            <td class="mdc-data-table__cell">${measurement.arm || ''}</td>
+            <td class="mdc-data-table__cell">${measurement.chest || ''}</td>
+            <td class="mdc-data-table__cell">${measurement.waist || ''}</td>
+            <td class="mdc-data-table__cell">${measurement.hip || ''}</td>
+            <td class="mdc-data-table__cell">${measurement.thigh || ''}</td>
+            <td class="mdc-data-table__cell">${measurement.calf || ''}</td>
+        `;
+                        measurementsBody.appendChild(row);
+                    });
+
+                    // Close modal
+                    modal.close();
+                });
+
+                // Populate table with saved measurements
+                const savedMeasurements = JSON.parse(localStorage.getItem('measurements')) || [];
+                savedMeasurements.forEach(measurement => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+            <td class="mdc-data-table__cell">${measurement.neck || ''}</td>
+            <!-- Similar cells for other measurements -->
+          `;
+                    measurementsBody.appendChild(row);
+                });
+            </script>
+        </section>
+
+        <!--TMB-->
+        <section id="tmb" style="display: none;">
+            <main class="content mdc-top-app-bar-fixed-adjust" style="padding: 16px;">
+                <div class="mdc-card">
+                    <section class="mdc-card__primary">
+                        <h2 class="mdc-card__title mdc-card__title--large">Calcular Taxa Metabólica Basal (TMB)</h2>
+                    </section>
+                    <section class="mdc-card__content">
+                        <div class="mdc-text-field mdc-text-field--outlined" style="width: 100%;">
+                            <input type="number" id="peso" class="mdc-text-field__input">
+                            <label for="peso" class="mdc-floating-label">Peso (kg)</label>
+                            <div class="mdc-line-ripple"></div>
+                        </div>
+                        <div class="mdc-text-field mdc-text-field--outlined" style="width: 100%;">
+                            <input type="number" id="altura" class="mdc-text-field__input">
+                            <label for="altura" class="mdc-floating-label">Altura (cm)</label>
+                            <div class="mdc-line-ripple"></div>
+                        </div>
+                        <button class="mdc-button mdc-button--raised" id="calcularBotao">
+                            <span class="mdc-button__label">Calcular TMB</span>
+                        </button>
+                        <div class="mdc-typography--headline6 resultado" style="margin-top: 16px;"></div>
+                    </section>
+                </div>
+            </main>
+
+            <!-- Inclua o JS do Material Design -->
+            <script
+                src="https://cdn.jsdelivr.net/npm/material-components-web@11.0.0/dist/material-components-web.min.js"></script>
+
+            <!-- Seu JavaScript personalizado -->
+            <script>
+                const pesoInput = document.getElementById('peso');
+                const alturaInput = document.getElementById('altura');
+                const calcularBotao = document.getElementById('calcularBotao');
+                const resultadoElemento = document.querySelector('.resultado');
+
+                calcularBotao.addEventListener('click', () => {
+                    const peso = parseFloat(pesoInput.value);
+                    const altura = parseFloat(alturaInput.value) / 100; // Convertendo cm para metros
+                    const tmb = calcularTMB(peso, altura);
+                    resultadoElemento.textContent = `Sua TMB: ${tmb.toFixed(2)} calorias/dia`;
+                });
+
+                function calcularTMB(peso, altura) {
+                    // Use a fórmula de Mifflin-St Jeor ou qualquer outra fórmula para calcular a TMB
+                    const tmb = 10 * peso + 6.25 * altura * 100 - 5 * 25 + 5;
+                    return tmb;
+                }
+            </script>
+        </section>
+
+        <!--Perfil-->
+        <section id="perfil" style="display: none;">
+            <main class="content" style="padding: 16px;">
+                <div class="mdc-card">
+                    <section class="mdc-card__primary">
+                        <h2 class="mdc-card__title mdc-card__title--large">Editar Perfil</h2>
+                    </section>
+                    <section class="mdc-card__content">
+                        <div class="mdc-text-field mdc-text-field--outlined" style="width: 100%;">
+                            <input type="text" id="nome" class="mdc-text-field__input">
+                            <label for="nome" class="mdc-floating-label">Nome</label>
+                            <div class="mdc-line-ripple"></div>
+                        </div>
+                        <div class="mdc-text-field mdc-text-field--outlined" style="width: 100%;">
+                            <input type="text" id="sobrenome" class="mdc-text-field__input">
+                            <label for="sobrenome" class="mdc-floating-label">Sobrenome</label>
+                            <div class="mdc-line-ripple"></div>
+                        </div>
+                        <div class="mdc-text-field mdc-text-field--outlined" style="width: 100%;">
+                            <input type="email" id="email" class="mdc-text-field__input">
+                            <label for="email" class="mdc-floating-label">Email</label>
+                            <div class="mdc-line-ripple"></div>
+                        </div>
+                        <div class="mdc-form-field">
+                            <div class="mdc-radio">
+                                <input class="mdc-radio__native-control" type="radio" id="masculino" name="sexo"
+                                    value="masculino">
+                                <div class="mdc-radio__background">
+                                    <div class="mdc-radio__outer-circle"></div>
+                                    <div class="mdc-radio__inner-circle"></div>
+                                </div>
+                            </div>
+                            <label for="masculino">Masculino</label>
+                        </div>
+                        <div class="mdc-form-field">
+                            <div class="mdc-radio">
+                                <input class="mdc-radio__native-control" type="radio" id="feminino" name="sexo"
+                                    value="feminino">
+                                <div class="mdc-radio__background">
+                                    <div class="mdc-radio__outer-circle"></div>
+                                    <div class="mdc-radio__inner-circle"></div>
+                                </div>
+                            </div>
+                            <label for="feminino">Feminino</label>
+                        </div>
+                        <div class="mdc-text-field mdc-text-field--outlined" style="width: 100%;">
+                            <input type="date" id="dataNascimento" class="mdc-text-field__input">
+                            <label for="dataNascimento" class="mdc-floating-label">Data de Nascimento</label>
+                            <div class="mdc-line-ripple"></div>
+                        </div>
+                        <button class="mdc-button mdc-button--raised" id="salvarBotao">
+                            <span class="mdc-button__label">Salvar Alterações</span>
+                        </button>
+                    </section>
+                </div>
+            </main>
+
+            <!-- Inclua o JS do Material Design -->
+            <script
+                src="https://cdn.jsdelivr.net/npm/material-components-web@11.0.0/dist/material-components-web.min.js"></script>
+
+            <!-- Seu JavaScript personalizado -->
+            <script>
+                const nomeInput = document.getElementById('nome');
+                const sobrenomeInput = document.getElementById('sobrenome');
+                const emailInput = document.getElementById('email');
+                const masculinoRadio = document.getElementById('masculino');
+                const femininoRadio = document.getElementById('feminino');
+                const dataNascimentoInput = document.getElementById('dataNascimento');
+                const salvarBotao = document.getElementById('salvarBotao');
+
+                // Carregar dados do localStorage, se existirem
+                const userData = JSON.parse(localStorage.getItem('userData')) || {};
+
+                nomeInput.value = userData.nome || '';
+                sobrenomeInput.value = userData.sobrenome || '';
+                emailInput.value = userData.email || '';
+                if (userData.sexo === 'masculino') {
+                    masculinoRadio.checked = true;
+                } else if (userData.sexo === 'feminino') {
+                    femininoRadio.checked = true;
+                }
+                dataNascimentoInput.value = userData.dataNascimento || '';
+
+                salvarBotao.addEventListener('click', () => {
+                    const nome = nomeInput.value;
+                    const sobrenome = sobrenomeInput.value;
+                    const email = emailInput.value;
+                    const sexo = masculinoRadio.checked ? 'masculino' : femininoRadio.checked ? 'feminino' : '';
+                    const dataNascimento = dataNascimentoInput.value;
+
+                    const userData = { nome, sobrenome, email, sexo, dataNascimento };
+                    localStorage.setItem('userData', JSON.stringify(userData));
+
+                    alert('Alterações salvas com sucesso!');
+                });
+            </script>
+        </section>
+
+    </section>
+
+    <!--Funções Gerais-->
+    <script>
+        // Funções de navegação
+
+        function showDashboard() {
+            document.getElementById("dashboard").style.display = "block";
+            document.getElementById("sidebar").style.display = "block";
+            document.getElementById("login").style.display = "none";
+            document.getElementById("medidas").style.display = "none";
+            document.getElementById("tmb").style.display = "none";
+            document.getElementById("perfil").style.display = "none";
+        }
+
+        function showMedidas() {
+            document.getElementById("medidas").style.display = "block";
+            document.getElementById("sidebar").style.display = "block";
+            document.getElementById("dashboard").style.display = "none";
+            document.getElementById("login").style.display = "none";
+            document.getElementById("tmb").style.display = "none";
+            document.getElementById("perfil").style.display = "none";
+        }
+
+        function showTMB() {
+            document.getElementById("tmb").style.display = "block";
+            document.getElementById("sidebar").style.display = "block";
+            document.getElementById("medidas").style.display = "none";
+            document.getElementById("dashboard").style.display = "none";
+            document.getElementById("login").style.display = "none";
+            document.getElementById("perfil").style.display = "none";
+        }
+
+        function showPerfil() {
+            document.getElementById("perfil").style.display = "block";
+            document.getElementById("sidebar").style.display = "block";
+            document.getElementById("tmb").style.display = "none";
+            document.getElementById("medidas").style.display = "none";
+            document.getElementById("dashboard").style.display = "none";
+            document.getElementById("login").style.display = "none";
+        }
+
+        function sair() {
+            document.getElementById("login").style.display = "block";
+            document.getElementById("sidebar").style.display = "none";
+            document.getElementById("perfil").style.display = "none";
+            document.getElementById("tmb").style.display = "none";
+            document.getElementById("medidas").style.display = "none";
+            document.getElementById("dashboard").style.display = "none";
+        }
+
+
+    </script>
+
+</body>
+
+</html>
